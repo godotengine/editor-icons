@@ -10,8 +10,13 @@
   <meta name="theme-color" content="#3d8fcc" />
   <title>Godot editor icons</title>
   <link rel="icon" href="favicon.png" />
+  <link rel="preload" href="thirdparty/fonts/inter-regular.woff2" as="font" crossorigin="anonymous">
+  <link rel="preload" href="thirdparty/fonts/inter-italic.woff2" as="font" crossorigin="anonymous">
+  <link rel="preload" href="thirdparty/fonts/inter-bold.woff2" as="font" crossorigin="anonymous">
+  <link rel="preload" href="thirdparty/fonts/inter-bold-italic.woff2" as="font" crossorigin="anonymous">
   <link rel="stylesheet" href="thirdparty/water.min.css">
   <link rel="stylesheet" href="thirdparty/hint.min.css">
+  <link rel="stylesheet" href="main.css">
   <script defer src="thirdparty/alpine.min.js"></script>
 </head>
 
@@ -55,18 +60,20 @@
       Showing <strong x-text="icons.length"></strong> icons.
     </p>
 
-    <template x-for="(icon, index) in filteredIcons()" :key="icon">
-      <!-- Remove space between icons by setting the font size to 0 (this doesn't affect tooltips). -->
-      <a href="#" @click.prevent="navigator.clipboard.writeText(icon.substring(icon.lastIndexOf('/') + 1))" style="font-size: 0">
-        <div class="hint--top hint--rounded hint--no-animate" :aria-label="`${icon.substring(icon.lastIndexOf('/') + 1)} (click to copy)`"
-          style="padding: 0.5rem">
-          <img
-            :src="`https://raw.githubusercontent.com/godotengine/godot/master/${icon}.svg`"
-            :width="iconDisplaySize" :height="iconDisplaySize"
-            :style="`max-width: ${iconDisplaySize}px; max-height: ${iconDisplaySize}px`">
-        </div>
-      </a>
-    </template>
+    <div class="icon-grid">
+      <template x-for="(icon, index) in filteredIcons()" :key="icon">
+        <!-- Remove space between icons by setting the font size to 0 (this doesn't affect tooltips). -->
+        <a href="#" @click.prevent="navigator.clipboard.writeText(icon.substring(icon.lastIndexOf('/') + 1))"
+          style="font-size: 0">
+          <div class="hint--top hint--rounded hint--no-animate"
+            :aria-label="`${icon.substring(icon.lastIndexOf('/') + 1)} (click to copy)`" style="padding: 0.5rem">
+            <img :src="`https://raw.githubusercontent.com/godotengine/godot/master/${icon}.svg`"
+              :width="iconDisplaySize" :height="iconDisplaySize"
+              :style="`max-width: ${iconDisplaySize}px; max-height: ${iconDisplaySize}px`">
+          </div>
+        </a>
+      </template>
+    </div>
 
     <footer style="margin: 2rem 0 4rem 0; opacity: 0.8; text-align: center">
       © 2025-present Hugo Locurcio and contributors<br />
