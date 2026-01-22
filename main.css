@@ -59,4 +59,20 @@ body {
   /* Always use dark background color, as the icons are designed to be seen on a dark background. */
   background-color: #262626;
   border-radius: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem
+}
+
+.icon img {
+  max-width: var(--icon-size);
+  max-height: var(--icon-size);
+  width: var(--icon-size);
+  height: var(--icon-size);
+  object-fit: contain;
 }
