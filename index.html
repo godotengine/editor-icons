@@ -21,7 +21,7 @@
 </head>
 
 <body>
-  <main x-data="editorIcons()">
+  <main x-data="editorIcons()" :style="`--icon-size: ${$store.iconDisplaySize}px`">
     <h1>Godot editor icons</h1>
     <em style="opacity: 0.7">Last updated for <strong x-text="`Godot ${engineVersion}`"></strong>.</em>
     <p>
@@ -43,9 +43,9 @@
 
     <p>
       <label for="iconSize">Icon display size:</label>
-      <input type="range" id="iconSize" min="16" max="64" step="4" x-model="iconDisplaySize"
+      <input type="range" id="iconSize" min="16" max="64" step="4" x-model="$store.iconDisplaySize"
         style="display: inline; margin: 0 1rem" />
-      <span x-text="`${iconDisplaySize}×${iconDisplaySize}`"></span>
+      <span x-text="`${$store.iconDisplaySize}×${$store.iconDisplaySize}`"></span>
     </p>
 
     <input type="text" id="iconFilter" x-model="iconFilter" placeholder="Type to filter icons..."
@@ -62,39 +62,53 @@
 
     <div class="icon-grid">
       <template x-for="(icon, index) in filteredIcons()" :key="icon">
-        <!-- Remove space between icons by setting the font size to 0 (this doesn't affect tooltips). -->
-        <a href="#" @click.prevent="navigator.clipboard.writeText(icon.substring(icon.lastIndexOf('/') + 1))"
-          style="font-size: 0">
-          <div class="hint--top hint--rounded hint--no-animate"
-            :aria-label="`${icon.substring(icon.lastIndexOf('/') + 1)} (click to copy)`" style="padding: 0.5rem">
-            <img :src="`https://raw.githubusercontent.com/godotengine/godot/master/${icon}.svg`"
-              :width="iconDisplaySize" :height="iconDisplaySize"
-              :style="`max-width: ${iconDisplaySize}px; max-height: ${iconDisplaySize}px`">
-          </div>
+        <a href="#"
+          class="hint--top hint--rounded hint--no-animate icon"
+          @click.prevent="clickHandler(icon, $el)"
+          :aria-label="formatTooltip(icon)"
+        >
+          <img :src="`https://raw.githubusercontent.com/godotengine/godot/master/${icon}.svg`"
+            loading="lazy">
         </a>
       </template>
     </div>
 
     <footer style="margin: 2rem 0 4rem 0; opacity: 0.8; text-align: center">
       © 2025-present Hugo Locurcio and contributors<br />
-      <a href="https://github.com/godot-editor-icons/godot-editor-icons.github.io">
+      <a href="https://github.com/godotengine/editor-icons">
         Contribute to this viewer on GitHub!
       </a>
     </footer>
   </main>
 
   <script>
+    document.addEventListener("alpine:init", () => {
+      // The size to display icons at (in pixels).
+      // We store it separately from other state because it's not dependent on it.
+      Alpine.store("iconDisplaySize", 48);
+    })
     function editorIcons() {
       return {
         // The Godot editor version to display icons for.
         // TODO: Provide a dropdown to select the editor version, including `master`.
         engineVersion: "4.6",
 
-        // The size to display icons at (in pixels).
-        iconDisplaySize: 48,
-
         // The icon filter search string.
         iconFilter: "",
+
+        // Copies icon name to clipboard and changes the tooltip to "Copied to clipboard".
+        clickHandler(icon, element) {
+          navigator.clipboard.writeText(icon.substring(icon.lastIndexOf("/") + 1));
+          element.ariaLabel = "Copied to clipboard";
+          setTimeout(() => {
+            element.ariaLabel = this.formatTooltip(icon);
+          }, 2000);
+        },
+
+        // Formats tooltip text for the given icon.
+        formatTooltip(icon) {
+          return `${icon.substring(icon.lastIndexOf('/') + 1)} (click to copy)`;
+        },
 
         // Filter the icons based on the input value.
         filteredIcons() {
