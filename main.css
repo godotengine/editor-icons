@@ -37,6 +37,13 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --body-background-color: #262626;
+
+    /* Override water.css variables to match the Godot 4.6+ modern theme. */
+    --background: #141414;
+    --background-alt: #1b1b1b;
+    --button-base: #1b1b1b;
+    --button-hover: #141414;
+    --border: hsla(0, 0%, 50%, 0.5);
   }
 
   input, code {
